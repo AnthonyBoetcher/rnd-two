@@ -9,7 +9,9 @@
     <title>Evals 2.0</title>
 </head>
 <body>
-
+<div class="card">
+<span id="countdown" style="font-weight: bold;"></span>
+</div>
 
     
     <div class="slideshow-container">
@@ -115,7 +117,25 @@
 </html>
 
 <style>
+.card {
+    margin: 0 auto;
+    padding: 50px;
+    display: block;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 10px -5px #909090;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 
+#countdown {
+  font-size: 48px;
+}
 
     body {
     font-family: Arial, sans-serif;
@@ -189,7 +209,37 @@ audio {
 </style>
 
 <script>
- 
+
+var timeInSecs;
+var ticker;
+
+function startTimer(secs) {
+timeInSecs = parseInt(secs);
+ticker = setInterval("tick()", 1000); 
+}
+
+function tick( ) {
+var secs = timeInSecs;
+if (secs > 0) {
+timeInSecs--; 
+}
+else {
+clearInterval(ticker);
+startTimer(6.3333333333*60); // 4 minutes in seconds
+}
+
+var mins = Math.floor(secs/60);
+secs %= 60;
+var pretty = ( (mins < 10) ? "0" : "" ) + mins + ":" + ( (secs < 10) ? "0" : "" ) + secs;
+
+document.getElementById("countdown").innerHTML = pretty;
+}
+
+startTimer(6.3333333*60); 
+
+    
+
+    
 let slideIndex = 0;
 let slides;
 
