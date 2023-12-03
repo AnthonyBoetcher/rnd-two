@@ -122,6 +122,9 @@
         <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
         <a class="next" onclick="changeSlide(1)">&#10095;</a>
     </div>
+    <progress value="0" max="380" id="pbar" ></progress><p id="counting">380</p>
+  <button id="start" onclick="start_countdown()">Start CountDown</button>
+ 
 
     <script src="script.js"></script>
 </body>
@@ -200,6 +203,18 @@ audio {
 </style>
 
 <script>
+    function start_countdown(){
+    var reverse_counter = 10;
+var downloadTimer = setInterval(function(){
+  document.getElementById("pbar").value = 10 - --reverse_counter;
+  if(reverse_counter <= 0)
+    clearInterval(downloadTimer);
+  
+  document.getElementById("counting").innerHTML= reverse_counter;
+  
+},1000);
+}
+    
 let slideIndex = 0;
 let slides;
 
