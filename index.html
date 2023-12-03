@@ -9,6 +9,27 @@
     <title>Evals 2.0</title>
 </head>
 <body>
+
+<div class="full-width">
+  <div class="container">
+    <div class="row text-center">
+
+      <div id="progressBar">
+        <div></div>
+      </div>
+
+        <ul id="countdown">
+      
+          <li><span id="minute" class="numbers">00</span>
+              <p class="name">minutes</p></li>
+          <li><span id="second" class="numbers">00</span>
+              <p class="name">seconds</p></li>
+        </ul>
+
+    </div>
+  </div>
+</div>
+    
     <div class="slideshow-container">
 
         <div class="slide fade">
@@ -122,8 +143,7 @@
         <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
         <a class="next" onclick="changeSlide(1)">&#10095;</a>
     </div>
-    <progress value="0" max="380" id="pbar" ></progress><p id="counting">380</p>
-  <button id="start" onclick="start_countdown()">Start CountDown</button>
+  
  
 
     <script src="script.js"></script>
@@ -131,6 +151,72 @@
 </html>
 
 <style>
+    .full-width {
+	width: 100%;
+}
+
+h1 {
+	text-transform: uppercase;
+}
+
+p span {
+	color: #d05656;
+	font-weight: bold;
+}
+
+p {
+  text-align: center;
+  font-size: 30px;
+  margin-top:0px;
+}
+
+ul {
+	list-style-type: none;
+	margin-bottom: 0;
+	margin-left: 0;
+}
+
+li {
+	display: inline-block;
+	margin-right: 2em;
+	width: 6em;
+}
+
+.numbers {
+	display: block;
+	font-family: sans-serif;
+	font-size: 60px;
+	line-height: 1.5;
+	margin: 0 auto;
+}
+
+.name {
+	font-family: sans-serif;
+	font-size: 20px;
+	line-height: 1.5;
+	margin: 0 auto;
+	text-align: center;
+	position: relative;
+	top: -25px;
+}
+
+#progressBar {
+  width: 90%;
+  margin: 10px auto;
+  height: 22px;
+  background-color: #efd0d0;
+}
+
+#progressBar div {
+  height: 100%;
+  text-align: right;
+  padding: 0 10px;
+  line-height: 22px; /* same as #progressBar height if we want text middle aligned */
+  width: 0;
+  background-color: #d05656;
+  box-sizing: border-box;
+}
+
     body {
     font-family: Arial, sans-serif;
 }
@@ -203,17 +289,49 @@ audio {
 </style>
 
 <script>
-    function start_countdown(){
-    var reverse_counter = 10;
-var downloadTimer = setInterval(function(){
-  document.getElementById("pbar").value = 10 - --reverse_counter;
-  if(reverse_counter <= 0)
-    clearInterval(downloadTimer);
-  
-  document.getElementById("counting").innerHTML= reverse_counter;
-  
-},1000);
-}
+ $(document).ready(function(){
+
+//COUNTDOWN TIMER
+//edit ".25" below to change time in terms of day
+var deadline = new Date(Date.now() + .0043055556 *24*3600*1000);
+
+var x = setInterval(function() {
+
+var now = Date.now();
+var t = deadline - now;
+var days = Math.floor(t / (1000 * 60 * 60 * 24));
+var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60));
+var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((t % (1000 * 60)) / 1000);
+  document.getElementById("day").innerHTML =days ;
+  document.getElementById("hour").innerHTML =hours;
+  document.getElementById("minute").innerHTML = minutes;
+  document.getElementById("second").innerHTML =seconds;
+  if (t < 0) {
+          clearInterval(x);
+          document.getElementById("day").innerHTML ='0';
+          document.getElementById("hour").innerHTML ='0';
+          document.getElementById("minute").innerHTML ='0' ;
+          document.getElementById("second").innerHTML = '0'; }
+}, 1000);
+
+//COUNTDOWN BAR
+
+function progress(timeleft, timetotal, $element) {
+    var progressBarWidth = timeleft * $element.width() / timetotal;
+    $element.find('div').animate({ width: progressBarWidth }, timeleft == timetotal ? 0 : 1000, 'linear');
+    if(timeleft > 0) {
+        setTimeout(function() {
+            progress(timeleft - 1, timetotal, $element);
+        }, 1000);
+    }
+};
+//adjust these numbers to match time set
+//must be in seconds
+progress(380, 380, $('#progressBar'));
+
+});
+
     
 let slideIndex = 0;
 let slides;
