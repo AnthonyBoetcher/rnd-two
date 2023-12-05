@@ -9,6 +9,7 @@
       margin: 0;
       overflow: hidden;
       background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
     }
 
     #whiteboard {
@@ -58,6 +59,8 @@
     .toolbar-button {
       margin-bottom: 5px;
       cursor: pointer;
+      padding: 8px;
+      border-radius: 5px;
     }
 
     #lineWeightSlider {
@@ -84,6 +87,12 @@
       border: none;
       padding: 3px 5px;
       font-size: 12px;
+      display: none;
+    }
+
+    .draggable {
+      position: absolute;
+      cursor: move;
     }
 
     #uploadButton {
@@ -94,17 +103,18 @@
     }
 
     #uploadedContent {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  display: flex; /* Allow centering */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-}
-
-
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      display: flex;
+      /* Allow centering */
+      justify-content: center;
+      /* Center horizontally */
+      align-items: center;
+      /* Center vertically */
+    }
 
   </style>
 </head>
@@ -116,8 +126,10 @@
     <input type="color" id="colorPicker" onchange="changeColor()">
     <span>Line Weight: </span>
     <input type="range" id="lineWeightSlider" min="2" max="50" value="5" onchange="adjustLineWeight()">
+    <div id="lineWeightDisplay">Line Weight: 5</div>
     <button class="toolbar-button" onclick="toggleEraser()">Toggle Eraser (E)</button>
     <button class="toolbar-button" onclick="undo()">Undo (Ctrl + Z)</button>
+    <button class="toolbar-button" onclick="redo()">Redo (Ctrl + Y)</button>
     <button class="toolbar-button" onclick="addTextInput()">Add Text Input</button>
   </div>
   <div id="emojiToolbar">
@@ -131,12 +143,15 @@
   <div id="uploadedContent"></div>
 
   <script>
+
+    
     document.addEventListener("DOMContentLoaded", function () {
       const canvas = document.getElementById("whiteboard");
       const gridCanvas = document.getElementById("grid");
       const context = canvas.getContext("2d");
       const gridContext = gridCanvas.getContext("2d");
       const undoStack = [];
+      const redoStack = [];
       let isDrawing = false;
       let isErasing = false;
       let lineWeight = 5;
@@ -147,6 +162,9 @@
       gridCanvas.width = window.innerWidth;
       gridCanvas.height = window.innerHeight;
 
+      function drag(e) {
+        e.dataTransfer.setData("text", e.target.innerHTML);
+      }
       // Function to draw the grid
       function drawGrid() {
         const gridSize = 40; // Double the grid size
@@ -189,6 +207,8 @@
           document.getElementById("colorPicker").click();
         } else if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
           undo();
+        } else if (e.key === "y" && (e.ctrlKey || e.metaKey)) {
+          redo();
         }
         updateLineWeightSlider();
       });
@@ -247,11 +267,12 @@
 
       function updateLineWeightSlider() {
         document.getElementById("lineWeightSlider").value = lineWeight;
+        document.getElementById("lineWeightDisplay").innerText = `Line Weight: ${lineWeight}`;
       }
 
       function toggleEraser() {
         isErasing = !isErasing;
-        canvas.style.cursor = isErasing ? "url('eraser.png'), auto" : "crosshair";
+        canvas.classList.toggle("eraser", isErasing);
       }
 
       function adjustLineWeight(amount) {
@@ -275,7 +296,8 @@
 
       function undo() {
         if (undoStack.length > 1) {
-          undoStack.pop();
+          const currentState = undoStack.pop();
+          redoStack.push(currentState);
           const previousState = undoStack[undoStack.length - 1];
           context.putImageData(previousState, 0, 0);
         } else {
@@ -283,7 +305,14 @@
           undoStack.length = 0;
           drawGrid(); // Redraw the grid after clearing
         }
-        
+      }
+
+      function redo() {
+        if (redoStack.length > 0) {
+          const nextState = redoStack.pop();
+          undoStack.push(nextState);
+          context.putImageData(nextState, 0, 0);
+        }
       }
 
       function redraw() {
@@ -352,10 +381,6 @@
       addEmoji(data);
     }
 
-    
-   
-    
-
     function uploadContent(event) {
       const file = event.target.files[0];
       if (file) {
@@ -368,17 +393,18 @@
           img.src = URL.createObjectURL(file);
           img.className = "draggable";
           img.style.zIndex = 2; // Set a higher z-index for the uploaded image
+
+          // Add a delete button
+          const deleteButton = document.createElement("button");
+          deleteButton.className = "deleteButton";
+          deleteButton.innerHTML = "Delete";
+          deleteButton.onclick = function () {
+            contentElement.removeChild(img);
+            contentElement.removeChild(deleteButton);
+          };
           contentElement.appendChild(img);
-          makeDraggable(contentElement); // Make the entire container draggable
-        } else if (fileType === "video") {
-          contentElement.innerHTML = ""; // Clear previous content
-          const video = document.createElement("video");
-          video.src = URL.createObjectURL(file);
-          video.autoplay = true;
-          video.controls = true;
-          video.className = "draggable";
-          video.style.zIndex = 2; // Set a higher z-index for the uploaded video
-          contentElement.appendChild(video);
+          contentElement.appendChild(deleteButton);
+
           makeDraggable(contentElement); // Make the entire container draggable
         }
       }
@@ -406,12 +432,6 @@
         document.addEventListener("mouseup", handleDragEnd);
       });
     }
-
- const redoStack = [];
-
-  </script>
-</body>
-</html>
   </script>
 </body>
 </html>
