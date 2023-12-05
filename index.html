@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doodle Board with Grid</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2210 0 100 100%22><text y=%22.90em%22 font-size=%2290%22>💜</text></svg>">
+  <title>Eva8</title>
   <style>
     body {
       margin: 0;
@@ -142,6 +143,10 @@
   <input type="file" id="uploadButton" onchange="uploadContent(event)" accept="image/*,video/*">
   <div id="uploadedContent"></div>
 
+  <div id="emojiToolbar">
+    <!-- (Emoji toolbar content will be generated dynamically) -->
+  </div>
+  
   <script>
 
     
@@ -165,6 +170,46 @@
       function drag(e) {
         e.dataTransfer.setData("text", e.target.innerHTML);
       }
+
+      function showEmojiMenu(e) {
+        e.preventDefault();
+
+        const emojiMenu = document.createElement("div");
+        emojiMenu.className = "emojiMenu";
+        emojiMenu.style.position = "absolute";
+        emojiMenu.style.left = e.clientX + "px";
+        emojiMenu.style.top = e.clientY + "px";
+        emojiMenu.style.zIndex = 1000;
+        emojiMenu.style.background = "#fff";
+        emojiMenu.style.border = "1px solid #ccc";
+        emojiMenu.style.borderRadius = "5px";
+        emojiMenu.style.padding = "5px";
+        emojiMenu.style.display = "flex";
+        emojiMenu.style.flexWrap = "wrap";
+
+        const emojiList = [
+          '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
+          '🙂', '🙃', '😉', '😌', '😍', '😘', '😗', '😙', '😚', '😋',
+          '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '😏',
+          '😒', '😞', '😔', '😟', '😕', '🙁', '😣', '😖', '😫', '😩'
+          // Add more emojis as needed
+        ];
+
+        emojiList.forEach((emoji) => {
+          const emojiItem = document.createElement("span");
+          emojiItem.className = "emoji";
+          emojiItem.innerHTML = emoji;
+          emojiItem.addEventListener("click", function () {
+            addEmoji(emoji);
+            document.body.removeChild(emojiMenu);
+          });
+          emojiMenu.appendChild(emojiItem);
+        });
+
+        document.body.appendChild(emojiMenu);
+      }
+
+      canvas.addEventListener("contextmenu", showEmojiMenu);
       // Function to draw the grid
       function drawGrid() {
         const gridSize = 40; // Double the grid size
