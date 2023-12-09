@@ -1,483 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2210 0 100 100%22><text y=%22.90em%22 font-size=%2290%22>💜</text></svg>">
-  <title>Eva8</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: #f0f0f0;
-      font-family: Arial, sans-serif;
-    }
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="favi.png">
 
-    #whiteboard {
-      width: 100vw;
-      height: 100vh;
-      cursor: crosshair;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    #grid {
-      pointer-events: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    #toolbar {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #emojiToolbar {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      z-index: 1000;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      background-color: #fff;
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .emoji {
-      font-size: 20px;
-      cursor: move;
-    }
-
-    .toolbar-button {
-      margin-bottom: 5px;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 5px;
-    }
-
-    #lineWeightSlider {
-      width: 100px;
-    }
-
-    .textInput {
-      position: absolute;
-      padding: 5px;
-      border: 1px solid #000;
-      resize: both;
-      overflow: hidden;
-      z-index: 1001;
-      cursor: move;
-    }
-
-    .deleteButton {
-      position: absolute;
-      top: 0;
-      right: 0;
-      cursor: pointer;
-      background-color: #ff0000;
-      color: #ffffff;
-      border: none;
-      padding: 3px 5px;
-      font-size: 12px;
-      display: none;
-    }
-
-    .draggable {
-      position: absolute;
-      cursor: move;
-    }
-
-    #uploadButton {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      z-index: 1000;
-    }
-
-    #uploadedContent {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-      display: flex;
-      /* Allow centering */
-      justify-content: center;
-      /* Center horizontally */
-      align-items: center;
-      /* Center vertically */
-    }
-
-  </style>
+    <title>Evals 2.0</title>
 </head>
 <body>
-  <canvas id="whiteboard"></canvas>
-  <canvas id="grid"></canvas>
-  <div id="toolbar">
-    <span>Line Color: </span>
-    <input type="color" id="colorPicker" onchange="changeColor()">
-    <span>Line Weight: </span>
-    <input type="range" id="lineWeightSlider" min="2" max="50" value="5" onchange="adjustLineWeight()">
-    <div id="lineWeightDisplay">Line Weight: 5</div>
-    <button class="toolbar-button" onclick="toggleEraser()">Toggle Eraser (E)</button>
-    <button class="toolbar-button" onclick="undo()">Undo (Ctrl + Z)</button>
-    <button class="toolbar-button" onclick="redo()">Redo (Ctrl + Y)</button>
-    <button class="toolbar-button" onclick="addTextInput()">Add Text Input</button>
-  </div>
-  <div id="emojiToolbar">
-    <span class="emoji" draggable="true" ondragstart="drag(event)" onclick="addEmoji('😊')">😊</span>
-    <span class="emoji" draggable="true" ondragstart="drag(event)" onclick="addEmoji('🎉')">🎉</span>
-    <span class="emoji" draggable="true" ondragstart="drag(event)" onclick="addEmoji('❤️')">❤️</span>
-    <span class="emoji" draggable="true" ondragstart="drag(event)" onclick="addEmoji('👍')">👍</span>
-    <!-- Add more emojis as needed -->
-  </div>
-  <input type="file" id="uploadButton" onchange="uploadContent(event)" accept="image/*,video/*">
-  <div id="uploadedContent"></div>
-
-  <div id="emojiToolbar">
-    <!-- (Emoji toolbar content will be generated dynamically) -->
-  </div>
-  
-  <script>
+<div class="card">
+<span id="countdown" style="font-weight: bold; color: white"></span>
+</div>
 
     
-    document.addEventListener("DOMContentLoaded", function () {
-      const canvas = document.getElementById("whiteboard");
-      const gridCanvas = document.getElementById("grid");
-      const context = canvas.getContext("2d");
-      const gridContext = gridCanvas.getContext("2d");
-      const undoStack = [];
-      const redoStack = [];
-      let isDrawing = false;
-      let isErasing = false;
-      let lineWeight = 5;
-      let lineColor = "#000";
+    <div class="slideshow-container">
 
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      gridCanvas.width = window.innerWidth;
-      gridCanvas.height = window.innerHeight;
+        <div class="slide fade">
+            <img src="1.png" alt="Slide 1">
+            <audio controls>
+                <source src="1.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
 
-      function drag(e) {
-        e.dataTransfer.setData("text", e.target.innerHTML);
-      }
+        <div class="slide fade">
+            <img src="2.png" alt="Slide 2">
+            <audio controls>
+                <source src="2.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
 
-      function showEmojiMenu(e) {
-        e.preventDefault();
+        <div class="slide fade">
+            <img src="3.png" alt="Slide 2">
+            <audio controls>
+                <source src="3.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
 
-        const emojiMenu = document.createElement("div");
-        emojiMenu.className = "emojiMenu";
-        emojiMenu.style.position = "absolute";
-        emojiMenu.style.left = e.clientX + "px";
-        emojiMenu.style.top = e.clientY + "px";
-        emojiMenu.style.zIndex = 1000;
-        emojiMenu.style.background = "#fff";
-        emojiMenu.style.border = "1px solid #ccc";
-        emojiMenu.style.borderRadius = "5px";
-        emojiMenu.style.padding = "5px";
-        emojiMenu.style.display = "flex";
-        emojiMenu.style.flexWrap = "wrap";
+        <div class="slide fade">
+            <img src="4.png" alt="Slide 2">
+            <audio controls>
+                <source src="4.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        
+     <div class="slide fade">
+            <img src="7.png" alt="Slide 2">
+            <audio controls>
+                <source src="5.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
 
-        const emojiList = [
-          '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
-          '🙂', '🙃', '😉', '😌', '😍', '😘', '😗', '😙', '😚', '😋',
-          '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '😏',
-          '😒', '😞', '😔', '😟', '😕', '🙁', '😣', '😖', '😫', '😩'
-          // Add more emojis as needed
-        ];
+        <div class="slide fade">
+            <img src="8.png" alt="Slide 2">
+            <audio controls>
+                <source src="6.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
 
-        emojiList.forEach((emoji) => {
-          const emojiItem = document.createElement("span");
-          emojiItem.className = "emoji";
-          emojiItem.innerHTML = emoji;
-          emojiItem.addEventListener("click", function () {
-            addEmoji(emoji);
-            document.body.removeChild(emojiMenu);
-          });
-          emojiMenu.appendChild(emojiItem);
-        });
+        <div class="slide fade">
+            <img src="9.png" alt="Slide 2">
+            <audio controls>
+                <source src="7.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        
+        <div class="slide fade">
+            <img src="5.png" alt="Slide 2">
+            <audio controls>
+                <source src="8.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
 
-        document.body.appendChild(emojiMenu);
-      }
+        <div class="slide fade">
+            <img src="6.png" alt="Slide 2">
+            <audio controls>
+                <source src="9.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
 
-      canvas.addEventListener("contextmenu", showEmojiMenu);
-      // Function to draw the grid
-      function drawGrid() {
-        const gridSize = 40; // Double the grid size
-        gridContext.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
+        <div class="slide fade">
+           <video width="600" height="600" controls>
+           <source src="interviewWithSteve.mp4" type="video/mp4">
+             <source src="interviewWithSteve.webm" type="video/mp4">
 
-        gridContext.beginPath();
-        gridContext.strokeStyle = "#d3d3d3"; // Light grey color for grid lines
-        gridContext.lineWidth = 0.5;
+               </video>
+           
+        </div>
 
-        for (let i = gridSize; i < gridCanvas.width; i += gridSize) {
-          gridContext.moveTo(i, 0);
-          gridContext.lineTo(i, gridCanvas.height);
-        }
+        <div class="slide fade">
+            <img src="11.png" alt="Slide 2">
+            <audio controls>
+                <source src="10.m4a" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
 
-        for (let i = gridSize; i < gridCanvas.height; i += gridSize) {
-          gridContext.moveTo(0, i);
-          gridContext.lineTo(gridCanvas.width, i);
-        }
+        <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+        <a class="next" onclick="changeSlide(1)">&#10095;</a>
+    </div>
+  
+ 
 
-        gridContext.stroke();
-      }
-
-      // Initial draw of the grid
-      drawGrid();
-
-      canvas.addEventListener("mousedown", startDrawing);
-      canvas.addEventListener("mouseup", stopDrawing);
-      canvas.addEventListener("mousemove", draw);
-      canvas.addEventListener("mouseout", stopDrawing);
-      canvas.addEventListener("wheel", handleMouseWheel);
-
-      window.addEventListener("keydown", function (e) {
-        if (e.key === "e" || e.key === "E") {
-          toggleEraser();
-        } else if (e.key === "ArrowUp") {
-          adjustLineWeight(2);
-        } else if (e.key === "ArrowDown" && lineWeight > 2) {
-          adjustLineWeight(-2);
-        } else if (e.key === "c" || e.key === "C") {
-          document.getElementById("colorPicker").click();
-        } else if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
-          undo();
-        } else if (e.key === "y" && (e.ctrlKey || e.metaKey)) {
-          redo();
-        }
-        updateLineWeightSlider();
-      });
-
-      document.getElementById("colorPicker").addEventListener("input", function () {
-        changeColor();
-      });
-
-      document.getElementById("lineWeightSlider").addEventListener("input", function () {
-        adjustLineWeight();
-      });
-
-      function startDrawing(e) {
-        isDrawing = true;
-        draw(e); // Draw a dot on mousedown
-      }
-
-      function stopDrawing() {
-        isDrawing = false;
-        context.beginPath();
-        saveDrawingState();
-      }
-
-      function draw(e) {
-        if (!isDrawing) return;
-
-        context.lineWidth = isErasing ? lineWeight * 2 : lineWeight;
-        context.lineCap = "round";
-        context.strokeStyle = isErasing ? "#f0f0f0" : lineColor;
-
-        context.lineTo(e.clientX, e.clientY);
-        context.stroke();
-        context.beginPath();
-        context.moveTo(e.clientX, e.clientY);
-      }
-
-      function handleMouseWheel(e) {
-        if (e.deltaY < 0) {
-          adjustLineWeight(2);
-        } else {
-          adjustLineWeight(-2);
-        }
-      }
-
-      window.addEventListener("resize", function () {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        gridCanvas.width = window.innerWidth;
-        gridCanvas.height = window.innerHeight;
-        redraw();
-      });
-
-      function changeColor() {
-        lineColor = document.getElementById("colorPicker").value;
-      }
-
-      function updateLineWeightSlider() {
-        document.getElementById("lineWeightSlider").value = lineWeight;
-        document.getElementById("lineWeightDisplay").innerText = `Line Weight: ${lineWeight}`;
-      }
-
-      function toggleEraser() {
-        isErasing = !isErasing;
-        canvas.classList.toggle("eraser", isErasing);
-      }
-
-      function adjustLineWeight(amount) {
-        if (amount !== undefined) {
-          lineWeight += amount;
-          if (lineWeight < 2) {
-            lineWeight = 2;
-          } else if (lineWeight > 50) {
-            lineWeight = 50;
-          }
-        } else {
-          lineWeight = parseInt(document.getElementById("lineWeightSlider").value);
-        }
-        updateLineWeightSlider();
-      }
-
-      function saveDrawingState() {
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        undoStack.push(imageData);
-      }
-
-      function undo() {
-        if (undoStack.length > 1) {
-          const currentState = undoStack.pop();
-          redoStack.push(currentState);
-          const previousState = undoStack[undoStack.length - 1];
-          context.putImageData(previousState, 0, 0);
-        } else {
-          context.clearRect(0, 0, canvas.width, canvas.height);
-          undoStack.length = 0;
-          drawGrid(); // Redraw the grid after clearing
-        }
-      }
-
-      function redo() {
-        if (redoStack.length > 0) {
-          const nextState = redoStack.pop();
-          undoStack.push(nextState);
-          context.putImageData(nextState, 0, 0);
-        }
-      }
-
-      function redraw() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        undoStack.forEach(state => context.putImageData(state, 0, 0));
-        drawGrid(); // Redraw the grid after resizing
-      }
-    });
-
-    function addEmoji(emoji) {
-      const canvas = document.getElementById("whiteboard");
-      const context = canvas.getContext("2d");
-
-      context.font = "30px Arial";
-      context.fillStyle = lineColor;
-      context.fillText(emoji, 50, 50); // You can adjust the position
-    }
-
-    function addTextInput() {
-      const textInput = document.createElement("div");
-      textInput.className = "textInput";
-      textInput.style.left = "50px";
-      textInput.style.top = "50px";
-      const textarea = document.createElement("textarea");
-      textarea.rows = "4";
-      textarea.cols = "20";
-      textarea.addEventListener("input", function () {
-        updateTextContent(textarea);
-      });
-      textInput.appendChild(textarea);
-
-      // Add a delete button
-      const deleteButton = document.createElement("button");
-      deleteButton.className = "deleteButton";
-      deleteButton.innerHTML = "Delete";
-      deleteButton.onclick = function (e) {
-        e.stopPropagation(); // Prevent the click event from reaching the canvas
-        document.body.removeChild(textInput);
-      };
-      textInput.appendChild(deleteButton);
-
-      document.body.appendChild(textInput);
-
-      makeDraggable(textInput);
-
-      // Focus on the textarea when it's added
-      textarea.focus();
-    }
-
-    function updateTextContent(textArea) {
-      // Do something with the updated text content if needed
-      console.log(textArea.value);
-    }
-
-    function drag(e) {
-      e.dataTransfer.setData("text", e.target.innerText);
-    }
-
-    function allowDrop(e) {
-      e.preventDefault();
-    }
-
-    function drop(e) {
-      e.preventDefault();
-      const data = e.dataTransfer.getData("text");
-      addEmoji(data);
-    }
-
-    function uploadContent(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const fileType = file.type.split("/")[0]; // Check if it's an image or video
-        const contentElement = document.getElementById("uploadedContent");
-
-        if (fileType === "image") {
-          contentElement.innerHTML = ""; // Clear previous content
-          const img = document.createElement("img");
-          img.src = URL.createObjectURL(file);
-          img.className = "draggable";
-          img.style.zIndex = 2; // Set a higher z-index for the uploaded image
-
-          // Add a delete button
-          const deleteButton = document.createElement("button");
-          deleteButton.className = "deleteButton";
-          deleteButton.innerHTML = "Delete";
-          deleteButton.onclick = function () {
-            contentElement.removeChild(img);
-            contentElement.removeChild(deleteButton);
-          };
-          contentElement.appendChild(img);
-          contentElement.appendChild(deleteButton);
-
-          makeDraggable(contentElement); // Make the entire container draggable
-        }
-      }
-    }
-
-    function makeDraggable(element) {
-      let offsetX, offsetY;
-
-      element.addEventListener("mousedown", function (e) {
-        e.preventDefault();
-        offsetX = e.clientX - element.getBoundingClientRect().left;
-        offsetY = e.clientY - element.getBoundingClientRect().top;
-
-        function handleDragMove(e) {
-          element.style.left = e.clientX - offsetX + "px";
-          element.style.top = e.clientY - offsetY + "px";
-        }
-
-        function handleDragEnd() {
-          document.removeEventListener("mousemove", handleDragMove);
-          document.removeEventListener("mouseup", handleDragEnd);
-        }
-
-        document.addEventListener("mousemove", handleDragMove);
-        document.addEventListener("mouseup", handleDragEnd);
-      });
-    }
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
+
+<style>
+.card {
+    margin: 0 auto;
+    padding: 50px;
+    display: block;
+    max-width: 200px;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(0,0,0,0)
+    border-radius: 12px;
+    box-shadow: 5px #909090;
+    position: absolute;
+    top: 10%;
+    right: 0%;
+ 
+}
+
+#countdown {
+  font-size: 48px;
+}
+
+    body {
+    font-family: Arial, sans-serif;
+}
+
+.slideshow-container {
+    max-width: 800px; 
+    width: 400px; 
+    position: center; 
+    margin: auto auto; 
+}
+
+.slide {
+    display: none;
+}
+
+body {
+  background-image: url('space.gif');
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+ background-size: cover;
+}
+
+img {
+    max-height: 500px;
+    width: 100%;
+        position: center;
+        margin:0 auto; 
+}
+    
+    video {
+    max-height: 800px;
+        width: 400px;
+        max-width: 800px;
+            position: center;
+            margin:0 auto; 
+}
+audio {
+    width: 100%;
+    margin:0 auto; 
+}
+
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -22px;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    background-color: black;
+    border: none;
+}
+
+.prev {
+    left: 0;
+}
+
+.next {
+    right: 0;
+}
+
+.fade {
+    animation: fade 1s ease-in-out;
+}
+
+@keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+</style>
+
+<script>
+
+var timeInSecs;
+var ticker;
+
+function startTimer(secs) {
+timeInSecs = parseInt(secs);
+ticker = setInterval("tick()", 1000); 
+}
+
+function tick( ) {
+var secs = timeInSecs;
+if (secs > 0) {
+timeInSecs--; 
+}
+else {
+clearInterval(ticker);
+startTimer(6.6666666666666*60); 
+}
+
+var mins = Math.floor(secs/60);
+secs %= 60;
+var pretty = ( (mins < 10) ? "0" : "" ) + mins + ":" + ( (secs < 10) ? "0" : "" ) + secs;
+
+document.getElementById("countdown").innerHTML = pretty;
+}
+
+startTimer(6.66666666666666*60); 
+
+    
+
+    
+let slideIndex = 0;
+let slides;
+
+function showSlides() {
+    slides = document.getElementsByClassName("slide");
+
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+
+    slides[slideIndex].style.display = "block";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    showSlides();
+});
+
+document.querySelector(".prev").addEventListener("click", function () {
+    slideIndex--;
+    if (slideIndex < 0) {
+        slideIndex = slides.length - 1;
+    }
+    showSlides();
+});
+
+document.querySelector(".next").addEventListener("click", function () {
+    slideIndex++;
+    if (slideIndex >= slides.length) {
+        slideIndex = 0;
+    }
+    showSlides();
+});
+
+// Ensure smooth transition when clicking on a specific slide
+document.querySelectorAll(".slide").forEach(function (slide, index) {
+    slide.addEventListener("click", function () {
+        slideIndex = index;
+        showSlides();
+    });
+});
+</script>
